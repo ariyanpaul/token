@@ -1,0 +1,76 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+abstract contract Token {
+    mapping(address => uint256) public balances;
+    uint256 public totalSupply;
+    string public name;
+    string public symbol;
+    uint8 public decimals;
+
+    constructor(
+        string memory _name,
+        string memory _symbol,
+        uint8 _decimals,
+        uint256 _initialSupply
+    ) {
+        name = _name;
+        symbol = _symbol;
+        decimals = _decimals;
+        totalSupply = _initialSupply * (uint256(decimals));
+        balances[msg.sender] = totalSupply;
+    }
+
+    modifier validAddress(address _addr) {
+        require(_addr != address(0), "Invalid address");
+        _;
+    }
+
+    modifier hasSufficientBalance(address _addr, uint256 _amount) {
+        require(balances[_addr] >= _amount, "Insufficient balance");
+        _;
+    }
+
+    function transfer(address to, uint256 value) public virtual;
+
+    function mint(address recipient, uint256 value) internal validAddress(recipient) {
+        balances[recipient] += value;
+        totalSupply += value;
+    }
+
+    function burn(address account, uint256 value) internal validAddress(account) hasSufficientBalance(account, value) {
+        balances[account] -= value;
+        totalSupply -= value;
+    }
+}
+
+contract MyToken is Token {
+    address public owner;
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only the owner can call this function");
+        _;
+    }
+
+    constructor(string memory _name, string memory _symbol, uint256 _initialSupply)
+        Token(_name, _symbol, 1, _initialSupply)
+    {
+        owner = msg.sender;
+    }
+
+    function transfer(address to, uint256 value) public override {
+        require(to != address(0), "Invalid address");
+        require(balances[msg.sender] >= value, "Insufficient balance");
+
+        balances[msg.sender] -= value;
+        balances[to] += value;
+    }
+
+    function mintTokens(address recipient, uint256 value) public onlyOwner {
+        mint(recipient, value);
+    }
+
+    function burnTokens(address account, uint256 value) public onlyOwner {
+        burn(account, value);
+    }
+}
