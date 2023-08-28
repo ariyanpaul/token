@@ -26,10 +26,6 @@ To interact with this contract, you'll need an Ethereum wallet or a development 
 
 ## Token Contract Functions
 
-### `transfer(address to, uint256 value)`
-
-Transfers `value` tokens from the sender's balance to the `to` address.
-
 ### `mintTokens(address recipient, uint256 value)`
 
 Mints (creates) `value` tokens and adds them to the `recipient`'s balance. Only the contract owner can call this function.
@@ -45,9 +41,8 @@ The contract owner has special privileges and can mint and burn tokens. The owne
 ## Example Workflow
 
 1. Deploy the contract to the Ethereum blockchain.
-2. Use the `transfer` function to send tokens between addresses.
-3. The contract owner can use the `mintTokens` function to create new tokens for specific addresses.
-4. The contract owner can use the `burnTokens` function to destroy tokens from an address's balance.
+2. The contract owner can use the `mintTokens` function to create new tokens for specific addresses.
+3. The contract owner can use the `burnTokens` function to destroy tokens from an address's balance.
 
 ## Authors
 
