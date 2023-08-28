@@ -31,7 +31,6 @@ abstract contract Token {
         _;
     }
 
-    function transfer(address to, uint256 value) public virtual;
 
     function mint(address recipient, uint256 value) internal validAddress(recipient) {
         balances[recipient] += value;
@@ -56,14 +55,6 @@ contract MyToken is Token {
         Token(_name, _symbol, 1, _initialSupply)
     {
         owner = msg.sender;
-    }
-
-    function transfer(address to, uint256 value) public override {
-        require(to != address(0), "Invalid address");
-        require(balances[msg.sender] >= value, "Insufficient balance");
-
-        balances[msg.sender] -= value;
-        balances[to] += value;
     }
 
     function mintTokens(address recipient, uint256 value) public onlyOwner {
